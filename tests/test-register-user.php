@@ -20,8 +20,8 @@ $registerUser = new RegisterUser(
 );
 
 $user = $registerUser->execute(
-    'juan',
-    'my-secret-password'
+    'pedro',
+    'ABC123'
 );
 
 echo 'User registered!' . PHP_EOL;

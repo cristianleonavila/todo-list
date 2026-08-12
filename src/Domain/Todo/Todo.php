@@ -15,6 +15,7 @@
 
 namespace App\Domain\Todo;
 use App\Domain\User\User;
+use InvalidArgumentException;
 
 class Todo {
     
@@ -73,5 +74,25 @@ class Todo {
         $this->completed = false;
     }
 
+    public function changeTitle(string $title): void
+    {
+        if (trim($title) === '') {
+            throw new InvalidArgumentException(
+                'Todo title cannot be empty'
+            );
+        }
 
+        $this->title = $title;
+    }
+
+    public function changeDescription(string $description): void
+    {
+        if (trim($description) === '') {
+            throw new InvalidArgumentException(
+                'Todo description cannot be empty'
+            );
+        }
+
+        $this->description = $description;
+    }    
 }

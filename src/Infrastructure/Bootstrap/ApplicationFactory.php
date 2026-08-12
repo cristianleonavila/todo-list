@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Bootstrap;
 
-use App\Application\User\LoginUser;
+use App\Application\Security\LoginUser;
 use App\Application\User\RegisterUser;
 use App\Application\Todo\CreateTodo;
 use App\Application\Todo\ListUserTodos;

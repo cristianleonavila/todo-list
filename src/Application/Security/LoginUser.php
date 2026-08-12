@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Application\User;
+namespace App\Application\Security;
 
 use App\Application\Security\AuthenticationSession;
 use App\Application\Security\PasswordHasher;
-use App\Domain\User\User;
 use App\Domain\User\UserRepository;
 
 class LoginUser

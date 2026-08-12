@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Controller;
 
-use App\Application\User\LoginUser;
+use App\Application\Security\LoginUser;
 use App\Infrastructure\Http\Request;
 use App\Infrastructure\Http\Response;
 

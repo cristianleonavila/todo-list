@@ -22,17 +22,16 @@ class RegisterUser
     }
 
     public function execute(
-        string $username,
-        string $password
+        RegisterUserInput $input
     ) {
-        if ( !$username ) {
+        if ( !$input->username ) {
             throw new InvalidArgumentException("The username is empty");
         }
-        if ( !$password ) {
+        if ( !$input->password ) {
             throw new InvalidArgumentException("The password is empty");
         }        
         $existingUser = $this->userRepository
-            ->findByUsername($username);
+            ->findByUsername($input->username);
 
         if ($existingUser !== null) {
             throw new UserAlreadyExistsException(
@@ -41,10 +40,10 @@ class RegisterUser
         }
 
         $hashedPassword = $this->passwordHasher
-            ->hash($password);
+            ->hash($input->password);
 
         $user = new User(
-            $username,
+            $input->username,
             $hashedPassword
         );
 

@@ -5,6 +5,7 @@ namespace App\Infrastructure\Http\Controller;
 use App\Infrastructure\Http\Request;
 use App\Infrastructure\Http\Response;
 use App\Application\User\RegisterUser;
+use App\Application\User\RegisterUserInput;
 
 class UserController
 {
@@ -18,7 +19,17 @@ class UserController
         Request $request
     ): Response {
         $body = $request->getBody();
-        $user = $this->registerUser->execute($body['username'], $body['password']);
+        if (
+            !isset($body['username']) ||
+            !is_string($body['username']) ||
+            !isset($body['password']) ||
+            !is_string($body['password'])
+        ) {
+            // 400 Bad Request
+        }        
+        $user = $this->registerUser->execute(
+            new RegisterUserInput($body['username'], $body['password'])
+        );
         return new Response([
             'message' => 'User created!',
             'id' => $user->getId()

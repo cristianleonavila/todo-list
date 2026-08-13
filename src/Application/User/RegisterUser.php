@@ -3,8 +3,10 @@
 namespace App\Application\User;
 
 use App\Application\Security\PasswordHasher;
+use App\Application\User\Exception\UserAlreadyExistsException;
 use App\Domain\User\User;
 use App\Domain\User\UserRepository;
+use InvalidArgumentException;
 
 class RegisterUser
 {
@@ -20,14 +22,20 @@ class RegisterUser
     }
 
     public function execute(
-        $username,
-        $password
+        string $username,
+        string $password
     ) {
+        if ( !$username ) {
+            throw new InvalidArgumentException("The username is empty");
+        }
+        if ( !$password ) {
+            throw new InvalidArgumentException("The password is empty");
+        }        
         $existingUser = $this->userRepository
             ->findByUsername($username);
 
         if ($existingUser !== null) {
-            throw new \RuntimeException(
+            throw new UserAlreadyExistsException(
                 'User already exists'
             );
         }

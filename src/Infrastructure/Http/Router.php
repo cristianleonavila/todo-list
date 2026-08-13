@@ -71,19 +71,48 @@ class Router
         $this->routes[$method][$path] = $handler;
     }
 
-    public function dispatch(
-        Request $request
-    ): mixed {
-        $handler = $this->routes[
-            $request->getMethod()
-        ][$request->getPath()] ?? null;
-
-        if ($handler === null) {
-            throw new \RuntimeException(
-                'Route not found'
+    private function matchRoute(
+        string $method,
+        string $path
+    ): array {
+        foreach ($this->routes[$method] ?? [] as $route => $handler) {
+            $pattern = preg_replace(
+                '/\{([a-zA-Z_][a-zA-Z0-9_]*)\}/',
+                '(?P<$1>[^/]+)',
+                $route
             );
+
+            $pattern = '#^' . $pattern . '$#';
+
+            if (preg_match($pattern, $path, $matches)) {
+                $parameters = [];
+
+                foreach ($matches as $key => $value) {
+                    if (is_string($key)) {
+                        $parameters[$key] = $value;
+                    }
+                }
+
+                return [
+                    'handler' => $handler,
+                    'parameters' => $parameters,
+                ];
+            }
         }
 
-        return $handler($request);
+        throw new \RuntimeException('Route not found');
+    }
+
+    public function dispatch(Request $request): mixed
+    {
+        $route = $this->matchRoute(
+            $request->getMethod(),
+            $request->getPath()
+        );
+
+        return ($route['handler'])(
+            $request,
+            $route['parameters']
+        );
     }
 }

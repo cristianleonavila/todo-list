@@ -3,14 +3,17 @@
 namespace App\Infrastructure\Bootstrap;
 
 use App\Application\Security\LoginUser;
+use App\Application\Security\LogoutUser;
 use App\Application\User\RegisterUser;
 use App\Application\Todo\CreateTodo;
 use App\Application\Todo\ListUserTodos;
 use App\Application\Todo\CompleteTodo;
 use App\Application\Todo\DeleteTodo;
+use App\Application\Todo\ReopenTodo;
 use App\Application\Todo\UpdateTodo;
 use App\Infrastructure\Http\Controller\TodoController;
 use App\Infrastructure\Http\Controller\AuthController;
+use App\Infrastructure\Http\Controller\UserController;
 use App\Infrastructure\Persistence\Doctrine\DoctrineTodoRepository;
 use App\Infrastructure\Persistence\Doctrine\DoctrineUserRepository;
 use App\Infrastructure\Security\PhpPasswordHasher;
@@ -148,19 +151,54 @@ class ApplicationFactory
             $userRepository,
             $authenticationSession
         );
-    }    
+    }  
+    
+    public function createReopenTodo() {
+        $todoRepository = new DoctrineTodoRepository(
+            $this->entityManager
+        );
+
+        $userRepository = new DoctrineUserRepository(
+            $this->entityManager
+        );
+
+        $authenticationSession = new PhpSessionAuthentication();
+
+        return new ReopenTodo(
+            $todoRepository,
+            $userRepository,
+            $authenticationSession
+        );        
+    }
 
     public function createTodoController(): TodoController
     {
         return new TodoController(
-            $this->createListUserTodos()
+            $this->createListUserTodos(),
+            $this->createCompleteTodo(),
+            $this->createReopenTodo(),
+            $this->createUpdateTodo(),
+            $this->createDeleteTodo(),
+            $this->createCreateTodo()
         );
     } 
+
+    public function createLogoutUser() {
+        $authenticationSession = new PhpSessionAuthentication();
+        return new LogoutUser($authenticationSession);
+    }
     
     public function createAuthController(): AuthController
     {
         return new AuthController(
-            $this->createLoginUser()
+            $this->createLoginUser(),
+            $this->createLogoutUser()
         );
-    }    
+    }   
+    
+    public function createUserController(): UserController {
+        return new UserController(
+            $this->createRegisterUser()
+        );
+    }
 }

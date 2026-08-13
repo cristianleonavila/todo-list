@@ -25,11 +25,60 @@ $router->post(
     [$authController, 'login']
 );
 
+$router->post(
+    '/api/logout',
+    [$authController, 'logout']
+);
+
 $todoController = $factory->createTodoController();
 
 $router->get(
     '/api/todos',
     [$todoController, 'list']
+);
+
+$router->get(
+    '/api/test/{id}',
+    function (
+        Request $request,
+        array $parameters
+    ) {
+        return new Response([
+            'id' => (int) $parameters['id']
+        ]);
+    }
+);
+
+$router->post(
+    '/api/todos/{id}/complete',
+    [$todoController, 'complete']
+);
+
+$router->post(
+    '/api/todos/{id}/reopen',
+    [$todoController, 'reopen']
+);
+
+$router->patch(
+    '/api/todos/{id}',
+    [$todoController, 'update']
+);
+
+$router->delete(
+    '/api/todos/{id}',
+    [$todoController, 'delete']
+);
+
+$router->post(
+    '/api/todos',
+    [$todoController, 'create']
+);
+
+$userController = $factory->createUserController();
+
+$router->post(
+    '/api/users',
+    [$userController, 'create']
 );
 
 try {

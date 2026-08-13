@@ -3,6 +3,7 @@
 namespace App\Application\Security;
 
 use App\Application\Security\AuthenticationSession;
+use App\Application\Security\Exception\InvalidCredentialsException;
 use App\Application\Security\PasswordHasher;
 use App\Domain\User\UserRepository;
 
@@ -30,7 +31,7 @@ class LoginUser
             ->findByUsername($username);
 
         if ($user === null) {
-            throw new \RuntimeException(
+            throw new InvalidCredentialsException(
                 'Invalid credentials'
             );
         }
@@ -39,7 +40,7 @@ class LoginUser
             $password,
             $user->getPassword()
         )) {
-            throw new \RuntimeException(
+            throw new InvalidCredentialsException(
                 'Invalid credentials'
             );
         }

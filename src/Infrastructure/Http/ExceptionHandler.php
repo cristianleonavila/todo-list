@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http;
 
 use App\Application\Security\Exception\InvalidCredentialsException;
+use App\Application\User\Exception\UserAlreadyExistsException;
 
 class ExceptionHandler
 {
@@ -19,9 +20,18 @@ class ExceptionHandler
             );
         }
 
+        if ($exception instanceof UserAlreadyExistsException) {
+            return new Response(
+                [
+                    'error' => $exception->getMessage()
+                ],
+                409
+            );
+        }        
+
         return new Response(
             [
-                'error' => 'Internal server error'
+                'error' => 'Internal server error ' .  $exception->getMessage()
             ],
             500
         );

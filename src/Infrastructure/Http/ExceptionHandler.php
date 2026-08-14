@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http;
 
 use App\Application\Security\Exception\InvalidCredentialsException;
+use App\Application\Shared\Exception\ForbiddenException;
 use App\Application\Todo\Exception\TodoNotFoundException;
 use App\Application\User\Exception\UserAlreadyExistsException;
 
@@ -38,6 +39,15 @@ class ExceptionHandler
                 404
             );
         }
+
+        if ( $exception instanceof ForbiddenException) {
+            return new Response(
+                [
+                    'error' => $exception->getMessage()
+                ],
+                403
+            );
+        }        
         
         if ($exception instanceof \InvalidArgumentException) {
             return new Response(

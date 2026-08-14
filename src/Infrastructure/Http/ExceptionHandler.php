@@ -27,11 +27,20 @@ class ExceptionHandler
                 ],
                 409
             );
+        }   
+        
+        if ($exception instanceof \InvalidArgumentException) {
+            return new Response(
+                [
+                    'error' => $exception->getMessage()
+                ],
+                400
+            );
         }        
 
         return new Response(
             [
-                'error' => 'Internal server error ' .  $exception->getMessage()
+                'error' => 'Internal server error'
             ],
             500
         );

@@ -25,7 +25,9 @@ class UserController
             !isset($body['password']) ||
             !is_string($body['password'])
         ) {
-            // 400 Bad Request
+            return new Response([
+                'message' => 'Bad Request'
+            ], 400);            
         }        
         $user = $this->registerUser->execute(
             new RegisterUserInput($body['username'], $body['password'])

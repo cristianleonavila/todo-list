@@ -6,10 +6,12 @@ namespace App\Infrastructure\Http\Controller;
 
 use App\Application\Todo\CompleteTodo;
 use App\Application\Todo\CreateTodo;
+use App\Application\Todo\CreateTodoInput;
 use App\Application\Todo\DeleteTodo;
 use App\Application\Todo\ListUserTodos;
 use App\Application\Todo\ReopenTodo;
 use App\Application\Todo\UpdateTodo;
+use App\Application\Todo\UpdateTodoInput;
 use App\Infrastructure\Http\Request;
 use App\Infrastructure\Http\Response;
 
@@ -74,7 +76,23 @@ class TodoController
     ): Response {
         $todoId = (int) $parameters['id'];
         $body = $request->getBody();
-        $this->updateTodo->execute($todoId, $body['title'], $body['description']);
+        if (
+            !isset($body['title']) &&
+            !is_string($body['title']) &&
+            !isset($body['description']) &&
+            !is_string($body['description'])
+        ) {
+            return new Response([
+                'message' => 'Bad Request'
+            ], 400);            
+        }        
+        $this->updateTodo->execute(
+            $todoId, 
+            new UpdateTodoInput(
+                $body['title'] ?? null, 
+                $body['description'] ?? null
+            )
+        );
 
         return new Response([
             'message' => 'Todo updated!'
@@ -98,7 +116,19 @@ class TodoController
         Request $request
     ): Response {
         $body = $request->getBody();
-        $todo = $this->createTodo->execute($body['title'], $body['description']);
+        if (
+            !isset($body['title']) ||
+            !is_string($body['title']) ||
+            !isset($body['description']) ||
+            !is_string($body['description'])
+        ) {
+            return new Response([
+                'message' => 'Bad Request'
+            ], 400);            
+        }        
+        $todo = $this->createTodo->execute(
+            new CreateTodoInput($body['title'], $body['description'])
+        );
         return new Response([
             'message' => 'Todo created!',
             'id' => $todo->getId()

@@ -6,6 +6,7 @@ use App\Application\Security\AuthenticationSession;
 use App\Domain\Todo\Todo;
 use App\Domain\Todo\TodoRepository;
 use App\Domain\User\UserRepository;
+use InvalidArgumentException;
 
 class CreateTodo
 {
@@ -24,9 +25,14 @@ class CreateTodo
     }
 
     public function execute(
-        $title,
-        $description
+        CreateTodoInput $input
     ) {
+        if ( !$input->title ) {
+            throw new InvalidArgumentException("Title is empty");
+        }
+        if ( !$input->description ) {
+            throw new InvalidArgumentException("Description is empty");
+        }        
         $userId = $this->authenticationSession
             ->getCurrentUserId();
 
@@ -47,8 +53,8 @@ class CreateTodo
 
         $todo = new Todo(
             $user,
-            $title,
-            $description
+            $input->title,
+            $input->description
         );
 
         $this->todoRepository->save($todo);

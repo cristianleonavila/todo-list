@@ -5,6 +5,7 @@ namespace App\Application\Todo;
 use App\Application\Security\AuthenticationSession;
 use App\Domain\Todo\TodoRepository;
 use App\Domain\User\UserRepository;
+use InvalidArgumentException;
 
 class UpdateTodo
 {
@@ -22,7 +23,7 @@ class UpdateTodo
         $this->authenticationSession = $authenticationSession;
     }
 
-    public function execute($todoId, string $title, string $description)
+    public function execute($todoId, UpdateTodoInput $input)
     {
         $userId = $this->authenticationSession
             ->getCurrentUserId();
@@ -31,6 +32,9 @@ class UpdateTodo
             throw new \RuntimeException(
                 'User is not authenticated'
             );
+        }
+        if ( !$input->title && !$input->description) {
+            throw new InvalidArgumentException("Title and description is empty");
         }
 
         $user = $this->userRepository
@@ -56,9 +60,12 @@ class UpdateTodo
                 'You cannot complete this todo'
             );
         }
-
-        $todo->changeTitle($title);
-        $todo->changeDescription($description);
+        if ( $input->title !== null) {
+            $todo->changeTitle($input->title);
+        }
+        if ( $input->description !== null ) {
+            $todo->changeDescription($input->description);
+        }
 
         $this->todoRepository->save($todo);
 

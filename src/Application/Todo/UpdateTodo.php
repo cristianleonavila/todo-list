@@ -3,6 +3,7 @@
 namespace App\Application\Todo;
 
 use App\Application\Security\AuthenticationSession;
+use App\Application\Shared\Exception\ForbiddenException;
 use App\Domain\Todo\TodoRepository;
 use App\Domain\User\UserRepository;
 use InvalidArgumentException;
@@ -56,7 +57,7 @@ class UpdateTodo
         }
 
         if ($todo->getCreatedBy()->getId() !== $user->getId()) {
-            throw new \RuntimeException(
+            throw new ForbiddenException(
                 'You cannot complete this todo'
             );
         }

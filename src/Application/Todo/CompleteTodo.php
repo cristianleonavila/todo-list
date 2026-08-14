@@ -3,6 +3,8 @@
 namespace App\Application\Todo;
 
 use App\Application\Security\AuthenticationSession;
+use App\Application\Shared\Exception\ForbiddenException;
+use App\Application\Todo\Exception\TodoNotFoundException;
 use App\Domain\Todo\TodoRepository;
 use App\Domain\User\UserRepository;
 
@@ -46,13 +48,13 @@ class CompleteTodo
             ->findById($todoId);
 
         if ($todo === null) {
-            throw new \RuntimeException(
+            throw new TodoNotFoundException(
                 'Todo not found'
             );
         }
 
         if ($todo->getCreatedBy()->getId() !== $user->getId()) {
-            throw new \RuntimeException(
+            throw new ForbiddenException(
                 'You cannot complete this todo'
             );
         }

@@ -3,6 +3,7 @@
 namespace App\Application\Todo;
 
 use App\Application\Security\AuthenticationSession;
+use App\Application\Shared\Exception\ForbiddenException;
 use App\Domain\Todo\Todo;
 use App\Domain\Todo\TodoRepository;
 use App\Domain\User\UserRepository;
@@ -52,7 +53,7 @@ class DeleteTodo {
         }
 
         if ($todo->getCreatedBy()->getId() !== $user->getId()) {
-            throw new \RuntimeException(
+            throw new ForbiddenException(
                 'You cannot delete this todo'
             );
         }

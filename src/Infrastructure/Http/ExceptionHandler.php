@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Http;
 
 use App\Application\Security\Exception\InvalidCredentialsException;
+use App\Application\Todo\Exception\TodoNotFoundException;
 use App\Application\User\Exception\UserAlreadyExistsException;
 
 class ExceptionHandler
@@ -27,7 +28,16 @@ class ExceptionHandler
                 ],
                 409
             );
-        }   
+        }  
+        
+        if ( $exception instanceof TodoNotFoundException) {
+            return new Response(
+                [
+                    'error' => $exception->getMessage()
+                ],
+                404
+            );
+        }
         
         if ($exception instanceof \InvalidArgumentException) {
             return new Response(

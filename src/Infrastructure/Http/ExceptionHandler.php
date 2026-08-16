@@ -60,7 +60,7 @@ class ExceptionHandler
 
         return new Response(
             [
-                'error' => 'Internal server error'
+                'error' => 'Internal server error' . $exception->getMessage()
             ],
             500
         );

@@ -5,6 +5,7 @@ declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Infrastructure\Bootstrap\ApplicationFactory;
+use App\Infrastructure\Http\Cors;
 use App\Infrastructure\Http\ExceptionHandler;
 use App\Infrastructure\Http\Request;
 use App\Infrastructure\Http\Response;
@@ -16,7 +17,10 @@ $factory = new ApplicationFactory(
     $entityManager
 );
 
+
 $router = new Router();
+
+Cors::handle();
 
 $authController = $factory->createAuthController();
 

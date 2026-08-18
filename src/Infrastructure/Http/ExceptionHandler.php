@@ -16,7 +16,7 @@ class ExceptionHandler
         if ($exception instanceof InvalidCredentialsException) {
             return new Response(
                 [
-                    'error' => 'Invalid credentials'
+                    'error' => $exception->getMessage()
                 ],
                 401
             );
@@ -69,7 +69,7 @@ class ExceptionHandler
 
         return new Response(
             [
-                'error' => 'Internal server error' . $exception->getMessage()
+                'error' => 'Internal server error ' . $exception->getMessage()
             ],
             500
         );

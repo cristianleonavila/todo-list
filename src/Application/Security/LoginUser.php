@@ -32,7 +32,7 @@ class LoginUser
 
         if ($user === null) {
             throw new InvalidCredentialsException(
-                'Invalid credentials'
+                'User not found'
             );
         }
 

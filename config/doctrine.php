@@ -24,14 +24,14 @@ $config->setMetadataDriverImpl($driver);
 $config->enableNativeLazyObjects(true);
 $connection = DriverManager::getConnection([
     'driver'   => 'pdo_mysql',
-    'host'     => 'localhost',
-    #'host' => '172.16.11.206',
+    #'host'     => 'localhost',
+    'host' => '172.16.11.206',
     'port'     => 3306,
     'dbname'   => 'todo_list',
-    'user'     => 'root',
-    'password' => '',
-    #'user'     => 'mysql',
-    #'password' => '.7yBK%pH)007',    
+    #'user'     => 'root',
+    #'password' => '',
+    'user'     => 'mysql',
+    'password' => '.7yBK%pH)007',    
     'charset'  => 'utf8mb4'
 ]);
 

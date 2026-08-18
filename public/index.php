@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 require __DIR__ . '/../vendor/autoload.php';
 
 use App\Infrastructure\Bootstrap\ApplicationFactory;
@@ -10,6 +8,8 @@ use App\Infrastructure\Http\ExceptionHandler;
 use App\Infrastructure\Http\Request;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Http\Router;
+
+Cors::handle();
 
 $entityManager = require __DIR__ . '/../config/doctrine.php';
 
@@ -20,13 +20,18 @@ $factory = new ApplicationFactory(
 
 $router = new Router();
 
-Cors::handle();
+
 
 $authController = $factory->createAuthController();
 
 $router->post(
     '/api/login',
     [$authController, 'login']
+);
+
+$router->get(
+    '/api/auth/me',
+    [$authController, 'whoIam']
 );
 
 $router->post(
@@ -86,6 +91,7 @@ $router->post(
 );
 
 try {
+   
     $request = Request::fromGlobals();
 
     $result = $router->dispatch($request);

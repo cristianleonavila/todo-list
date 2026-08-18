@@ -9,28 +9,34 @@ class PhpSessionAuthentication implements AuthenticationSession
 {
     public function login(User $user)
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
+        $this->sessionStart();
         $_SESSION['user_id'] = $user->getId();
+        $_SESSION['username'] = $user->getUsername();
     }
 
     public function logout()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
+        $this->sessionStart();
         unset($_SESSION['user_id']);
     }
 
     public function getCurrentUserId()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
+        $this->sessionStart();
         return $_SESSION['user_id'] ?? null;
+    }
+
+    private function sessionStart() {
+        $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            if (!session_start([
+                'cookie_httponly' => true,
+                'cookie_secure'   => $secure,
+                'cookie_samesite' => 'None;Partitioned',
+            ])) {
+                $error = implode(",", error_get_last());
+                throw new \RuntimeException($error);
+            } 
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Http\Controller;
 
 use App\Application\Security\LoginUser;
 use App\Application\Security\LogoutUser;
+use App\Application\Security\WhoIAm;
 use App\Infrastructure\Http\Request;
 use App\Infrastructure\Http\Response;
 
@@ -13,7 +14,8 @@ class AuthController
 {
     public function __construct(
         private LoginUser $loginUser,
-        private LogoutUser $logoutUser
+        private LogoutUser $logoutUser,
+        private WhoIAm $whoIam
     ) {}
 
     public function login(Request $request): Response
@@ -42,5 +44,17 @@ class AuthController
         return new Response([
             'message' => 'Logged out'
         ]);
+    }
+
+    public function whoIam() {
+        $user = $this->whoIam->execute();
+        return new Response(
+            [
+                'user' => [
+                    'id' => $user->getId(),
+                    'username' => $user->getUserName()
+                ]
+            ]
+        );
     }
 }

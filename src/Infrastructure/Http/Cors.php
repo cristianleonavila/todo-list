@@ -6,6 +6,7 @@ namespace App\Infrastructure\Http;
 
 final class Cors
 {
+    //private const ALLOWED_ORIGIN = 'https://todolist.localhost';
     private const ALLOWED_ORIGIN = 'http://localhost:4200';
 
     public static function handle(): void

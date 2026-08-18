@@ -22,6 +22,15 @@ class ExceptionHandler
             );
         }
 
+        if ($exception instanceof InvalidCredentialsException) {
+            return new Response(
+                [
+                    'error' => $exception->getMessage()
+                ],
+                401
+            );
+        }        
+
         if ($exception instanceof UserAlreadyExistsException) {
             return new Response(
                 [

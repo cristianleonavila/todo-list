@@ -4,6 +4,7 @@ namespace App\Infrastructure\Bootstrap;
 
 use App\Application\Security\LoginUser;
 use App\Application\Security\LogoutUser;
+use App\Application\Security\WhoIAm;
 use App\Application\User\RegisterUser;
 use App\Application\Todo\CreateTodo;
 use App\Application\Todo\ListUserTodos;
@@ -192,13 +193,24 @@ class ApplicationFactory
     {
         return new AuthController(
             $this->createLoginUser(),
-            $this->createLogoutUser()
+            $this->createLogoutUser(),
+            $this->createWhoIam()
         );
     }   
     
     public function createUserController(): UserController {
         return new UserController(
             $this->createRegisterUser()
+        );
+    }
+
+    public function createWhoIam(): WhoIAm {
+        $userRepository = new DoctrineUserRepository(
+            $this->entityManager
+        );        
+        return new WhoIAm(
+            new PhpSessionAuthentication(),
+            $userRepository
         );
     }
 }

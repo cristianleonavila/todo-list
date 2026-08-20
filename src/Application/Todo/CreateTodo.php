@@ -26,7 +26,7 @@ class CreateTodo
 
     public function execute(
         CreateTodoInput $input
-    ) {
+    ) {	
         if ( !$input->title ) {
             throw new InvalidArgumentException("Title is empty");
         }

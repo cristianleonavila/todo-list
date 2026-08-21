@@ -23,6 +23,12 @@ class DoctrineTodoRepository implements TodoRepository
         $this->entityManager->flush();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param [string] $id
+     * @return Todo
+     */
     public function findById($id)
     {
         return $this->entityManager->find(

@@ -47,6 +47,11 @@ $router->get(
 );
 
 $router->get(
+    '/api/todos/{id}',
+    [$todoController, 'getById']
+);
+
+$router->get(
     '/api/test/{id}',
     function (
         Request $request,

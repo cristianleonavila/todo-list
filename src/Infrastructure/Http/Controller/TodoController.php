@@ -8,6 +8,7 @@ use App\Application\Todo\CompleteTodo;
 use App\Application\Todo\CreateTodo;
 use App\Application\Todo\CreateTodoInput;
 use App\Application\Todo\DeleteTodo;
+use App\Application\Todo\GetTodoById;
 use App\Application\Todo\ListUserTodos;
 use App\Application\Todo\ReopenTodo;
 use App\Application\Todo\UpdateTodo;
@@ -23,7 +24,8 @@ class TodoController
         private ReopenTodo $reopenTodo,
         private UpdateTodo $updateTodo,
         private DeleteTodo $deleteTodo,
-        private CreateTodo $createTodo
+        private CreateTodo $createTodo,
+        private GetTodoById $getTodoById
     ) {}
 
     public function list(Request $request): Response
@@ -86,7 +88,7 @@ class TodoController
                 'message' => 'Bad Request'
             ], 400);            
         }        
-        $this->updateTodo->execute(
+        $todo = $this->updateTodo->execute(
             $todoId, 
             new UpdateTodoInput(
                 $body['title'] ?? null, 
@@ -95,7 +97,12 @@ class TodoController
         );
 
         return new Response([
-            'message' => 'Todo updated!'
+            'message' => 'Todo updated!',
+            'todo' => [
+                'id' => $todo->getId(),
+                'title' => $todo->getTitle(),
+                'description' => $todo->getDescription()                
+            ]
         ]);
     }   
     
@@ -131,7 +138,35 @@ class TodoController
         );
         return new Response([
             'message' => 'Todo created!',
-            'id' => $todo->getId()
+            'todo' => [
+                'id' => $todo->getId(),
+                'title' => $todo->getTitle(),
+                'description' => $todo->getDescription()                
+            ]
         ]);
+    }
+
+    public function getById(
+        Request $requests, 
+        array $pathParams) {
+
+        $id = $pathParams['id'];
+
+        if ( !$id ) {
+            return new Response([
+                'message' => 'Bad Request'
+            ], 400);             
+        }
+
+        $todo = $this->getTodoById->execute($id);
+        return new Response([
+            'message' => 'Success!',
+            'todo' => [
+                'id' => $todo->getId(),
+                'title' => $todo->getTitle(),
+                'description' => $todo->getDescription()                
+            ]
+        ]);        
+
     }
 }

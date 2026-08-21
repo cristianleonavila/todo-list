@@ -10,6 +10,7 @@ use App\Application\Todo\CreateTodo;
 use App\Application\Todo\ListUserTodos;
 use App\Application\Todo\CompleteTodo;
 use App\Application\Todo\DeleteTodo;
+use App\Application\Todo\GetTodoById;
 use App\Application\Todo\ReopenTodo;
 use App\Application\Todo\UpdateTodo;
 use App\Infrastructure\Http\Controller\TodoController;
@@ -172,6 +173,23 @@ class ApplicationFactory
         );        
     }
 
+    public function createGetTodoById() {
+        $todoRepository = new DoctrineTodoRepository(
+            $this->entityManager
+        );
+
+        $userRepository = new DoctrineUserRepository(
+            $this->entityManager
+        );
+
+        $authenticationSession = new PhpSessionAuthentication();        
+        return new GetTodoById(
+            $todoRepository,
+            $userRepository, 
+            $authenticationSession
+        );
+    }
+
     public function createTodoController(): TodoController
     {
         return new TodoController(
@@ -180,7 +198,8 @@ class ApplicationFactory
             $this->createReopenTodo(),
             $this->createUpdateTodo(),
             $this->createDeleteTodo(),
-            $this->createCreateTodo()
+            $this->createCreateTodo(),
+            $this->createGetTodoById()
         );
     } 
 
